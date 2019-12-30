@@ -1,0 +1,5 @@
+name: tanzania-water
+channels:
+  - conda-forge
+  - defaults
+dependencies:
