@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix 
 from sklearn.metrics import accuracy_score 
-from sklearn.metrics import classification_report 
+from sklearn.metrics import classification_report
 
 def model_preprocessing(df, feature_list, ohe, train=True):
     print('Beginning numerical cleaning...')
@@ -54,18 +54,9 @@ def con_year_avg(df):
     df = df.join(avg_con_years, rsuffix = '_avg', on = 'extraction_type')
     df = df.reset_index()
     df = df.drop(['index'], axis = 1)
-    df['construction_year'] = df.apply(con_year, axis=1)
+#    df['construction_year'] = df.apply(con_year, axis=1)
     df = df.drop(['construction_year_avg'], axis = 1)
-    print('------number of zeros = ', df['construction_year'].value_counts())
     return df
-
-def con_year(row: pd.DataFrame) -> int:
-        ## This function replaces 
-        if (row['construction_year'] == 0):
-            return int(row['construction_year_avg'])
-        else:  
-            return int(row['construction_year'])
-
 
 def obj_lister(df):
     # returns a list of columns that contain Objects
@@ -88,10 +79,9 @@ def obj_preprocessing(df, obj_list, ohe, train = True):
 
 
 def NaN_cleaning(df):
-    import numpy
     # Replace NaN with "unknown" bin
     print('---Replacing NaN with "unknown" bin...')
-    df = df.replace(numpy.nan, 'unknown')
+    df = df.replace(np.nan, 'unknown')
     print(f'---Check: Number of rows with nulls: {len(df[df.isna().any(axis=1)])}...\n')
     return df.reset_index(drop=True)
 
