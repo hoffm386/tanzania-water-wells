@@ -49,14 +49,12 @@ def drop_zero_long(df):
     return df.drop(df[df.longitude==0].index)
 
 def con_year_avg(df):
-    con_year_nonzero = df.replace(0, np.nan)
-    avg_con_years = pd.DataFrame(con_year_nonzero.groupby(['extraction_type']).mean()['construction_year'])
-    df = df.join(avg_con_years, rsuffix = '_avg', on = 'extraction_type')
-    df = df.reset_index()
-    df = df.drop(['index'], axis = 1)
-    df['construction_year'] = df.apply(con_year, axis=1)
-    df = df.drop(['construction_year_avg'], axis = 1)
-    print('------number of zeros = ', df['construction_year'].value_counts())
+    # con_year_nonzero = df.replace(0, np.nan)
+    # avg_con_years = pd.DataFrame(con_year_nonzero.groupby(['extraction_type']).mean()['construction_year'])
+    # df['con_year_avg'] = df.groupby(['extraction_type']).mean()['construction_year']
+    # df['construction_year'] = df.apply(con_year, axis=1)
+    # df = df.drop(['construction_year_avg'], axis = 1)
+    # print('------number of zeros = ', df['construction_year'].value_counts())
     return df
 
 def con_year(row: pd.DataFrame) -> int:
