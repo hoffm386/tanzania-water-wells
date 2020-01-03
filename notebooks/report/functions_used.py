@@ -1,7 +1,14 @@
 # Be sure to train/test split before processing DFs
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+from sklearn.metrics import plot_confusion_matrix
+from ipyleaflet import Map, basemaps, basemap_to_tiles, CircleMarker, LayerGroup
+
 
 def model_preprocessing(df, feature_list, ohe, train=True):
     # print('Beginning numerical cleaning...')
@@ -93,3 +100,46 @@ def ohe_data(df, ohe, train):
         array_current = ohe.transform(df).toarray()
     # print('Finish one hot encoding data...\n')
     return array_current
+
+def calc_accuracy(y_test, y_pred): 
+      
+    print("Confusion Matrix: ", 
+    confusion_matrix(y_test, y_pred)) 
+    print('\n')
+    print ("Accuracy : ", 
+    accuracy_score(y_test,y_pred)*100) 
+    print('\n')  
+    print("Report : ", 
+    classification_report(y_test, y_pred)) 
+
+def plot_matrix(model,X_test,y_test):
+    # 
+    titles_options = [("Confusion matrix, without normalization", None),
+                  ("Normalized confusion matrix", 'true')]
+    for title, normalize in titles_options:
+        disp = plot_confusion_matrix(model, X_test, y_test,
+                                display_labels = ['Functional', 'Needs Repair'],
+                                cmap=plt.cm.Blues,
+                                normalize = normalize)
+        disp.ax_.set_title(title)
+#     print(title)
+#     print(disp.confusion_matrix)
+    
+    plt.show()
+
+def make_map(X_test):
+    m = Map(center=(-6, 35),
+            zoom=5, 
+            scroll_wheel_zoom=True)
+    def create_marker(row):
+        lat_lon = (row["latitude"], row["longitude"])
+        return CircleMarker(location=lat_lon,
+                        draggable=False,
+                        fill_color="#055a8c",
+                        fill_opacity=0.35,
+                        radius=1,
+                        stroke=False)
+    markers = X_test.apply(create_marker, axis=1)
+    layer_group = LayerGroup(layers=tuple(markers.values))
+    m.add_layer(layer_group)
+    return m
